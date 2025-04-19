@@ -10,6 +10,8 @@ class ClientManager
 
     public function service(string $service)
     {
+        $service = strtolower($service);
+
         if (! isset($this->clients[$service])) {
             $appId = config('fxzb.app_id');
             $secret = config("fxzb.services.{$service}.secret");
