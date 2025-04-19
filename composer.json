@@ -1,0 +1,27 @@
+{
+    "name": "mitoop/laravel-fxzb",
+    "description": "发现周边 sdk for laravel",
+    "type": "library",
+    "keywords": ["fxzb"],
+    "autoload": {
+        "psr-4": {
+            "Mitoop\\Fxzb\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mitoop",
+            "email": "me@mitoop.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "^11|^12"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mitoop\\Fxzb\\ServiceProvider"
+            ]
+        }
+    }
+}
