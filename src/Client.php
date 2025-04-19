@@ -3,8 +3,8 @@
 namespace Mitoop\Fxzb;
 
 use Closure;
+use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class Client
@@ -32,34 +32,41 @@ class Client
         static::$events?->listen('mitoop.fxzb.requested', $callback);
     }
 
-    public function get($path, array $params = [], array $options = []): Response
+    public function get($path, ?array $params = null, array $headers = []): Response
     {
-        return $this->sendRequest('get', $path, $params, $options);
+        return $this->sendRequest('get', $path, [
+            'headers' => $headers,
+            'query' => $this->signer->attach($params ?: []),
+        ]);
     }
 
-    public function post($path, array $params = [], array $options = []): Response
+    public function post($path, ?array $params = null, array $headers = []): Response
     {
-        return $this->sendRequest('post', $path, $params, $options);
+        return $this->sendRequest('post', $path, [
+            'headers' => $headers,
+            'json' => $params,
+            'query' => $this->signer->attach($params ?: []),
+        ]);
     }
 
-    protected function sendRequest(string $method, string $path, array $params, array $options): Response
+    protected function sendRequest(string $method, string $path, array $options): Response
     {
-        $attach = $this->signer->attach($params);
         $path = Str::start($path, '/');
 
         $this->fireEvent('requesting', [
             $method,
-            $this->baseUrl.$path.'?'.http_build_query($attach),
-            $params,
+            $this->baseUrl.$path,
             $options,
         ]);
 
-        $response = Http::baseUrl($this->baseUrl)
-            ->timeout($this->timeout)
-            ->withOptions(array_merge($options, [
-                'query' => $attach,
-            ]))
-            ->$method($path, strtolower($method) === 'get' ? null : ($params ?: null));
+        $http = new GuzzleClient([
+            'base_uri' => $this->baseUrl,
+            'verify' => false,
+            'http_errors' => false,
+            'timeout' => $this->timeout,
+        ]);
+
+        $response = $http->$method($path, $options);
 
         $this->fireEvent('requested', [$response]);
 

@@ -4,27 +4,20 @@ namespace Mitoop\Fxzb;
 
 use Illuminate\Http\Client\Response as IlluminateResponse;
 
-class Response
+class Response extends IlluminateResponse
 {
-    public function __construct(protected IlluminateResponse $response) {}
-
     public function ok(): bool
     {
-        if (! $this->response->successful()) {
+        if (! $this->successful()) {
             return false;
         }
 
-        $data = $this->response->json();
+        $data = $this->json();
 
         if (isset($data['code']) && isset($data['message'])) {
             return false;
         }
 
         return true;
-    }
-
-    public function __call($method, $parameters): mixed
-    {
-        return $this->response->$method(...$parameters);
     }
 }
