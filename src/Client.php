@@ -61,9 +61,14 @@ class Client
 
         $http = new GuzzleClient([
             'base_uri' => $this->baseUrl,
-            'verify' => false,
+            'verify' => true,
             'http_errors' => false,
             'timeout' => $this->timeout,
+            'connect_timeout' => 3,
+            'headers' => [
+                'Content-Type' => 'application/json; charset=utf-8',
+                'Accept' => 'application/json',
+            ],
         ]);
 
         $response = $http->$method($path, $options);

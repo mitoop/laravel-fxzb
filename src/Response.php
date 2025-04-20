@@ -18,6 +18,10 @@ class Response extends IlluminateResponse
             return false;
         }
 
+        if (isset($data['errCode']) && (int) $data['errCode'] !== 0) {
+            return false;
+        }
+
         return true;
     }
 }
