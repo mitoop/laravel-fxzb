@@ -8,6 +8,7 @@ class ServiceProvider extends LaravelServiceProvider
 {
     public array $singletons = [
         ClientManager::class => ClientManager::class,
+        Router::class => Router::class,
     ];
 
     public function boot(): void
