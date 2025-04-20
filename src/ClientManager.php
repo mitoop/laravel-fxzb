@@ -8,9 +8,9 @@ class ClientManager
 {
     protected array $clients = [];
 
-    public function service(string $service)
+    public function service(Service $service)
     {
-        $service = strtolower($service);
+        $service = strtolower($service->value);
 
         if (! isset($this->clients[$service])) {
             $appId = config('fxzb.app_id');
