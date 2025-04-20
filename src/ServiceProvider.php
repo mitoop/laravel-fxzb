@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 class ServiceProvider extends LaravelServiceProvider
 {
+    public array $singletons = [
+        ClientManager::class => ClientManager::class,
+    ];
+
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {

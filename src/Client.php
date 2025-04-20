@@ -11,6 +11,8 @@ class Client
 {
     protected static ?Dispatcher $events = null;
 
+    protected ?GuzzleClient $http = null;
+
     public function __construct(
         protected string $baseUrl,
         protected SignerInterface $signer,
@@ -53,13 +55,18 @@ class Client
     {
         $path = Str::start($path, '/');
 
-        $this->fireEvent('requesting', [
-            $method,
-            $this->baseUrl.$path,
-            $options,
-        ]);
+        $this->fireEvent('requesting', [$method, $this->baseUrl.$path, $options]);
 
-        $http = new GuzzleClient([
+        $response = $this->getHttp()->$method($path, $options);
+
+        $this->fireEvent('requested', [$response]);
+
+        return new Response($response);
+    }
+
+    protected function getHttp(): GuzzleClient
+    {
+        return $this->http ??= new GuzzleClient([
             'base_uri' => $this->baseUrl,
             'verify' => true,
             'http_errors' => false,
@@ -70,12 +77,6 @@ class Client
                 'Accept' => 'application/json',
             ],
         ]);
-
-        $response = $http->$method($path, $options);
-
-        $this->fireEvent('requested', [$response]);
-
-        return new Response($response);
     }
 
     protected function fireEvent($name, array $data = []): ?array
