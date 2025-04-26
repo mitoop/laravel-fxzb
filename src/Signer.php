@@ -13,7 +13,12 @@ class Signer implements SignerInterface
         $params['nonce'] = bin2hex(random_bytes(16));
         $params['sign'] = $this->makeSignature($params);
 
-        return $params;
+        return [
+            'appId' => $params['appId'],
+            'timestamp' => $params['timestamp'],
+            'nonce' => $params['nonce'],
+            'sign' => $params['sign'],
+        ];
     }
 
     public function verify(array $params, string $signature): bool
