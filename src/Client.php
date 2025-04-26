@@ -59,9 +59,11 @@ class Client
 
         $response = $this->getHttp()->$method($path, $options);
 
+        $response = new Response($response);
+
         $this->fireEvent('requested', [$response]);
 
-        return new Response($response);
+        return $response;
     }
 
     protected function getHttp(): GuzzleClient
