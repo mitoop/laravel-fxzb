@@ -38,7 +38,7 @@ class Client
     {
         return $this->sendRequest('get', $path, [
             'headers' => $headers,
-            'query' => $this->signer->attach($params ?: []),
+            'query' => $this->signer->getSignatureFields($params ?: [], true),
         ]);
     }
 
@@ -47,7 +47,7 @@ class Client
         return $this->sendRequest('post', $path, [
             'headers' => $headers,
             'json' => $params,
-            'query' => $this->signer->attach($params ?: []),
+            'query' => $this->signer->getSignatureFields($params ?: []),
         ]);
     }
 

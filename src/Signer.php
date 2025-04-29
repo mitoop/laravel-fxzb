@@ -6,19 +6,20 @@ class Signer implements SignerInterface
 {
     public function __construct(protected string $appId, protected string $secret) {}
 
-    public function attach(array $params): array
+    public function getSignatureFields(array $params, bool $attach = false): array
     {
-        $params['appId'] = $this->appId;
-        $params['timestamp'] = (int) (microtime(true) * 1000);
-        $params['nonce'] = bin2hex(random_bytes(16));
-        $params['sign'] = $this->makeSignature($params);
-
-        return [
-            'appId' => $params['appId'],
-            'timestamp' => $params['timestamp'],
-            'nonce' => $params['nonce'],
-            'sign' => $params['sign'],
+        $signatureFields = [
+            'appId' => $this->appId,
+            'timestamp' => (int) (microtime(true) * 1000),
+            'nonce' => bin2hex(random_bytes(16)),
+            'sign' => $this->makeSignature($params),
         ];
+
+        if ($attach) {
+            return array_merge($params, $signatureFields);
+        }
+
+        return $signatureFields;
     }
 
     public function verify(array $params, string $signature): bool
