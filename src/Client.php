@@ -46,7 +46,7 @@ class Client
     {
         return $this->sendRequest('post', $path, [
             'headers' => $headers,
-            'json' => $params,
+            'json' => $params ?: null,
             'query' => $this->signer->getSignatureFields($params ?: []),
         ]);
     }
