@@ -56,10 +56,13 @@ class Signer implements SignerInterface
             }
 
             if (is_array($value)) {
-                $result += $this->flatten($value, $newKey);
+                $flattened = $this->flatten($value, $newKey);
+                if ($flattened) {
+                    $result += $flattened;
+                }
             } else {
-                if (is_null($value)) {
-                    $value = '';
+                if (is_null($value) || $value === '') {
+                    continue;
                 }
 
                 $result[$newKey] = $value;
