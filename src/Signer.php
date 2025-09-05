@@ -30,9 +30,7 @@ class Signer implements SignerInterface
 
     protected function makeSignature(array $params): string
     {
-        $filtered = array_filter($params, fn ($v) => $v !== '' && $v !== null);
-
-        $flattened = $this->flatten($filtered);
+        $flattened = $this->flatten($params);
 
         ksort($flattened, SORT_STRING);
 
@@ -60,6 +58,10 @@ class Signer implements SignerInterface
             if (is_array($value)) {
                 $result += $this->flatten($value, $newKey);
             } else {
+                if (is_null($value)) {
+                    $value = '';
+                }
+
                 $result[$newKey] = $value;
             }
         }
