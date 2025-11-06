@@ -61,7 +61,7 @@ class Signer implements SignerInterface
                     $result += $flattened;
                 }
             } else {
-                if (is_null($value)) {
+                if (is_null($value) || $value === '') {
                     continue;
                 }
 
