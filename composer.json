@@ -1,6 +1,6 @@
 {
     "name": "mitoop/laravel-fxzb",
-    "description": "发现周边 sdk for laravel",
+    "description": "发现周边 sdk for Laravel",
     "type": "library",
     "keywords": ["fxzb"],
     "autoload": {
